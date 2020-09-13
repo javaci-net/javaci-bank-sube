@@ -32,7 +32,8 @@ app.use('/api', async (req, res, next) => {
   let method = req.method;
   let path = req.path;
   if (path.indexOf('login')>=0) {
-    path = "/login"
+    path = "/login";
+    console.log("modify path for login");
   }  
   let url = `http://api.javacibank.com${path}`;
   console.log("url : ", url)
