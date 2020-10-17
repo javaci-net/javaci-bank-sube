@@ -27,7 +27,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // parse application/json
 app.use(bodyParser.json())
 
-
 app.use('/api', async (req, res, next) => {
   let method = req.method;
   let path = req.path;
