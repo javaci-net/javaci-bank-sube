@@ -17,5 +17,11 @@
     "express": "^4.17.1",
     "express-http-proxy": "^1.6.2",
     "http-proxy": "^1.18.1"
+<<<<<<< HEAD
+=======
+  },
+  "engines": {
+    "node": "12.x"
+>>>>>>> 58b778b123162e36cb8dfc71aae8fa2b5ce9910b
   }
 }
