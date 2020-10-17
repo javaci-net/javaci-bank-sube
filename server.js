@@ -31,29 +31,38 @@ app.use(bodyParser.json())
 app.use('/api', async (req, res, next) => {
   let method = req.method;
   let path = req.path;
-  if (path.indexOf('login')>=0) {
-    path = "/login";
-    console.log("modify path for login");
-  }  
-  let url = `http://api.javacibank.com${path}`;
-  console.log("url : ", url)
-  console.log("Proxiing....")
-  console.log("req.body : ", req.body)
   try {
+
+    if (path.indexOf('login') >= 0) {
+      path = "/login";
+      console.log("modify path for login");
+    } else {
+      path = `/api${path}`
+    }
+    let url = `http://api.javacibank.com${path}`;
+
+    console.log(`Proxiing from ${req.method}::${req.originalUrl} to  ${req.method}::${url}`);
+
     let response = await axios({
       method: method,
       url: url,
-      data: req.body
+      data: JSON.stringify(req.body),
+      headers: {
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "en-US,en;q=0.9,tr;q=0.8",
+        "content-type": "application/json"
+      }
     });
     let resData = response.data;
-    let resStatus = parseInt(response.status, 10) || 500;
+    console.log("Response Status : ", response.status)
     let resHeaders = response.headers;
-    /*  console.log("Res data : ", resData);
-     console.log("Res headers : ", resHeaders);
-     console.log("Res status : ", resStatus); */
-    res.set('Authorization', resHeaders['authorization'])// = resHeaders;
-    res.set('connection', resHeaders['connection'])// = resHeaders;
-    res.status(resStatus).send(resData)
+    if (path.indexOf('login') >= 0) {
+      res.set('Authorization', resHeaders['authorization'])// = resHeaders;
+      res.set('connection', resHeaders['connection'])// = resHeaders;
+    }
+
+    res.status(response.status).send(response.data);
+    
   } catch (error) {
 
     let resStatus = 500;
@@ -74,21 +83,11 @@ app.use('/api', async (req, res, next) => {
       console.log('Error', error.message);
       resData = error.message;
     }
-    console.log(`Error for the request ${error.config.method}::${error.config.url} status : ${resStatus}`);
+    console.log(error)
+    console.log(`Error for the request ${error.config && error.config.method}::${error.config && error.config.url} status : ${resStatus}`);
     res.status(resStatus).send(resData)
   }
 
-  //console.log("req.headers", req.headers)
-  /* proxy.web(req, res, {
-        changeOrigin: true,               // needed for virtual hosted sites 
-        ws: true,                         // proxy websockets 
-        logLevel: "debug",
-        target: `http://api.javacibank.com/`,
-        proxyRes:function (proxyRes, req, res) {
-            res.headers = {...proxyRes.headers, ...res.headers}
-            console.log('RAW Response from the target', JSON.stringify(res.headers, true, 2));
-          }
-    });*/
 })
 
 app.use((req, res) => {
@@ -99,8 +98,8 @@ app.use((req, res) => {
 
   res.sendFile(fileName, options)
 })
-app.listen(process.env.PORT||8080, () => {
-  console.log("APp is listening on port ",process.env.PORT||8080)
+app.listen(process.env.PORT || 8080, () => {
+  console.log("APp is listening on port ", process.env.PORT || 8080)
 })
 
 /* proxy.on('proxyRes', function (proxyRes, req, res) {
