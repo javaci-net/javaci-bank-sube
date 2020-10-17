@@ -82,13 +82,6 @@ app.use('/api', async (req, res, next) => {
       console.log('Error', error.message);
       resData = error.message;
     }
-<<<<<<< HEAD
-    console.log(error)
-    console.log(`Error for the request ${error.config && error.config.method}::${error.config && error.config.url} status : ${resStatus}`);
-    res.status(resStatus).send(resData)
-  }
-
-=======
     console.log(`Error for the request ${error.config.method}::${error.config.url} status : ${resStatus}`);
     res.status(resStatus).send(resData)
   }
@@ -104,7 +97,6 @@ app.use('/api', async (req, res, next) => {
             console.log('RAW Response from the target', JSON.stringify(res.headers, true, 2));
           }
     });*/
->>>>>>> 58b778b123162e36cb8dfc71aae8fa2b5ce9910b
 })
 
 app.use((req, res) => {
@@ -115,13 +107,8 @@ app.use((req, res) => {
 
   res.sendFile(fileName, options)
 })
-<<<<<<< HEAD
-app.listen(process.env.PORT || 8080, () => {
-  console.log("APp is listening on port ", process.env.PORT || 8080)
-=======
 app.listen(process.env.PORT||8080, () => {
   console.log("APp is listening on port ",process.env.PORT||8080)
->>>>>>> 58b778b123162e36cb8dfc71aae8fa2b5ce9910b
 })
 
 /* proxy.on('proxyRes', function (proxyRes, req, res) {
